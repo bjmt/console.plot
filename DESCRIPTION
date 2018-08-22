@@ -1,0 +1,13 @@
+Package: console.plot
+Title: Plots for the R console
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Benjamin",
+           family = "Tremblay",
+           role = c("aut", "cre"),
+           email = "b2tremblay@uwaterloo.ca")
+Description: Create plots using characters for printing in the console, or saving to disk.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.0
