@@ -13,6 +13,7 @@
 #' @param abline.x Draw a vertical line.
 #' @param abline.y Draw a horizontal line.
 #' @param abline.overlay Allow abline to hide data points/line.
+#' @param horizontal Flip axes.
 #' @param xlim Min and max for x axis.
 #' @param ylim Min and max for y axis.
 #' @param plot.width Width of plot.
@@ -27,7 +28,7 @@
 console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
                          xlab = NULL, ylab = NULL, type = "p", point = NULL,
                          line = NULL, abline.x = NULL, abline.y = NULL,
-                         abline.overlay = FALSE,
+                         abline.overlay = FALSE, horizontal = FALSE,
                          xlim = NULL, ylim = NULL, plot.width = NULL,
                          plot.height = NULL, legend = NULL, ASCII = FALSE) {
 
@@ -109,46 +110,20 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
     x <- x[x <= xlim[2]]
   }
 
-  if (min(x) < xlim[1]) x <- x + abs(xlim[1])
-  if (min(y) < ylim[1]) y <- y + abs(ylim[1])
-
-  x.diff <- 0 - min(x)
-  x <- x + x.diff
-  xlim2 <- xlim + x.diff
-
-  y.diff <- 0 - min(y)
-  y <- y + y.diff
-  ylim2 <- ylim + y.diff
-
-  xfix <- plot.width / (abs(xlim2[2] - xlim2[1]) + abs(xlim2[1]))
-  if (!is.infinite(xfix)) x <- x * xfix
-  x <- round(x)
-  if (any(x < 1)) {
-    x <- x + 1
-    x <- x * (plot.width / (plot.width + 1))
-  }
-  x <- round(x)
-
-  yfix <- plot.height / (abs(ylim2[2] - ylim2[1]) + abs(ylim2[1]))
-  y <- y * yfix
-  y <- round(y)
-  if (any(y < 1)) {
-    y <- y + 1
-    y <- y * (plot.height / (plot.height + 1))
-  }
-  y <- round(y)
+  x <- console.plot.fix.data(x, xlim[1], xlim[2], plot.width)
+  y <- console.plot.fix.data(y, ylim[1], ylim[2], plot.height)
 
   if (!is.null(abline.x)) {
     xlim.range <- seq(xlim[1], xlim[2], length.out = plot.width) + .Machine$double.xmin
     abline.x.t <- sort(c(abline.x, xlim.range))
-    abline.x <- which(abline.x.t == abline.x)
+    abline.x <- which(abline.x.t == abline.x)[1]
     if (abline.x > plot.width ||
         abline.x < min(xlim.range) - .Machine$double.xmin) abline.x <- NULL
   }
   if (!is.null(abline.y)) {
     ylim.range <- seq(ylim[1], ylim[2], length.out = plot.height) + .Machine$double.xmin
     abline.y.t <- sort(c(abline.y, ylim.range))
-    abline.y <- which(abline.y.t == abline.y)
+    abline.y <- which(abline.y.t == abline.y)[1]
     if (abline.y > plot.height ||
         abline.y < min(ylim.range) - .Machine$double.xmin) abline.y <- NULL
     abline.y <- plot.height - abline.y
@@ -192,20 +167,20 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
 
   # add axis lines
 
-  if (!ASCII) {
-    plot.lines <- console.plot.axis(plot.lines, plot.width, plot.height,
-                                    ylim, xlim)
-  } else stop("need to add console.plot.axis.ascii")
+  plot.lines <- console.plot.axis(plot.lines, plot.width, plot.height,
+                                  ylim, xlim, ASCII)
 
   # fix abline
 
   if (!is.null(abline.x) && !ASCII) {
     substr(plot.lines[1], abline.x + 14, abline.x + 14) <- intToUtf8(0x252C)
-    substr(plot.lines[length(plot.lines) - 2], abline.x + 14, abline.x + 14) <- intToUtf8(0x2534)
+    substr(plot.lines[length(plot.lines) - 2], abline.x + 14,
+           abline.x + 14) <- intToUtf8(0x2534)
   }
   if (!is.null(abline.y) && !ASCII) {
     substr(plot.lines[abline.y + 1], 14, 14) <- intToUtf8(0x2500)
-    substr(plot.lines[abline.y + 1], plot.width + 15, plot.width + 15) <- intToUtf8(0x2500)
+    substr(plot.lines[abline.y + 1], plot.width + 15,
+           plot.width + 15) <- intToUtf8(0x2500)
   }
 
   # add title
@@ -239,8 +214,6 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
                    xlab)
     plot.lines <- c(plot.lines, xlab, "")
   }
-
-  # print
 
   cat(plot.lines, sep = "\n", file = file)
 

@@ -191,6 +191,10 @@ console.plot.types <- function(x, y, groups, plot.width, plot.height, point,
   if (!is.null(abline.x)) {
     for (i in seq_len(plot.height)) {
       if (!abline.overlay) {
+        if (!ASCII) {
+          if (substr(plot.lines[i], abline.x, abline.x) == intToUtf8(0x2500))
+            substr(plot.lines[i], abline.x, abline.x) <- intToUtf8(0x253C)
+        }
         if (substr(plot.lines[i], abline.x, abline.x) != " ") next
       }
       if (ASCII) substr(plot.lines[i], abline.x, abline.x) <- "|"
