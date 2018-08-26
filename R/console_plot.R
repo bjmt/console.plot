@@ -46,7 +46,8 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
                      9733, 9734, 10035, 9746, 8865, 8857, 8853, 10023)
     all.symbols <- sapply(all.symbols, intToUtf8)
   }
-  all.symbols <- c(all.symbols, "@", "#", "$", "%", "&", ">", "<", "?", letters)
+  all.symbols <- c(all.symbols, "o", "@", "#", "$", "%", "&", ">", "<", "?",
+                   letters[-15])
 
   all.lines <- c()
   if (!ASCII) {
@@ -112,6 +113,7 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
 
   x <- console.plot.fix.data(x, xlim[1], xlim[2], plot.width)
   y <- console.plot.fix.data(y, ylim[1], ylim[2], plot.height)
+  if (ylim[1] < min(y)) y <- y + 1
 
   if (!is.null(abline.x)) {
     xlim.range <- seq(xlim[1], xlim[2], length.out = plot.width) + .Machine$double.xmin
@@ -176,11 +178,27 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
     substr(plot.lines[1], abline.x + 14, abline.x + 14) <- intToUtf8(0x252C)
     substr(plot.lines[length(plot.lines) - 2], abline.x + 14,
            abline.x + 14) <- intToUtf8(0x2534)
+    if (substr(plot.lines[length(plot.lines) - 1], abline.x + 14,
+               abline.x + 14) == intToUtf8(0x2575)) {
+      substr(plot.lines[length(plot.lines) - 2], abline.x + 14,
+             abline.x + 14) <- intToUtf8(0x253C)
+    }
   }
-  if (!is.null(abline.y) && !ASCII) {
-    substr(plot.lines[abline.y + 1], 14, 14) <- intToUtf8(0x2500)
-    substr(plot.lines[abline.y + 1], plot.width + 15,
-           plot.width + 15) <- intToUtf8(0x2500)
+  if (!is.null(abline.y)) {
+    if (!ASCII) {
+      substr(plot.lines[abline.y + 1], 14, 14) <- intToUtf8(0x2500)
+      substr(plot.lines[abline.y + 1], 13, 13) <- intToUtf8(0x251C)
+      substr(plot.lines[abline.y + 1], plot.width + 15,
+             plot.width + 15) <- intToUtf8(0x2500)
+      substr(plot.lines[abline.y + 1], plot.width + 16,
+             plot.width + 16) <- intToUtf8(0x2524)
+      if (substr(plot.lines[abline.y + 1], 12, 12) == intToUtf8(0x2500)) {
+        substr(plot.lines[abline.y + 1], 13, 13) <- intToUtf8(0x253C)
+      }
+    } else {
+      substr(plot.lines[abline.y + 1], 14, 14) <- "-"
+      substr(plot.lines[abline.y + 1], plot.width + 15, plot.width + 15) <- "-"
+    }
   }
 
   # add title
