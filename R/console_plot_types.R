@@ -20,10 +20,14 @@ console.plot.types <- function(x, y, groups, plot.width, plot.height, point,
 
       for (j in seq(h.index.i[2], length(plot.lines))) {
 
-        if (substr(plot.lines[j], h.index.i[1], h.index.i[1]) == " ") {
-          if (ASCII) substr(plot.lines[j], h.index.i[1], h.index.i[1]) <- "|"
-          if (!ASCII) substr(plot.lines[j], h.index.i[1],
-                             h.index.i[1]) <- intToUtf8(0x2502)
+        if (length(substr(plot.lines[j], h.index.i[1], h.index.i[1])) > 0) {
+
+          if (substr(plot.lines[j], h.index.i[1], h.index.i[1]) == " ") {
+            if (ASCII) substr(plot.lines[j], h.index.i[1], h.index.i[1]) <- "|"
+            if (!ASCII) substr(plot.lines[j], h.index.i[1],
+                               h.index.i[1]) <- intToUtf8(0x2502)
+          }
+
         }
 
       }
@@ -150,24 +154,33 @@ console.plot.types <- function(x, y, groups, plot.width, plot.height, point,
         for (m in seq_along(x.i.all)) {
           if (type %in% c("b")) {
 
-            if (substr(plot.lines[y.i.all[m]], x.i.all[m], x.i.all[m]) == " ") {
+            if (length(substr(plot.lines[y.i.all[m]], x.i.all[m], x.i.all[m])) > 0) {
 
-              plot.lines <- add.line(plot.lines, m, what)
+              if (substr(plot.lines[y.i.all[m]], x.i.all[m], x.i.all[m]) == " ") {
 
-            } 
+                plot.lines <- add.line(plot.lines, m, what)
 
-          } else if (type == "l") {
-          
-            if (substr(plot.lines[y.i.all[m]], x.i.all[m], x.i.all[m]) %in%
-                c(" ", point)) {
-
-              plot.lines <- add.line(plot.lines, m, what)
+              }
 
             }
-          
+
+          } else if (type == "l") {
+
+            if (length(substr(plot.lines[y.i.all[m]],
+                              x.i.all[m], x.i.all[m])) > 0) {
+
+              if (substr(plot.lines[y.i.all[m]], x.i.all[m], x.i.all[m]) %in%
+                  c(" ", point)) {
+
+                plot.lines <- add.line(plot.lines, m, what)
+
+              }
+
+            }
+
           }
         }
-      
+
       }
 
     }

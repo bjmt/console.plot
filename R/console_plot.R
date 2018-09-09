@@ -19,7 +19,8 @@
 #' @param plot.width Width of plot.
 #' @param plot.height Height of plot.
 #' @param legend Show legend.
-#' @param ASCII Whether to draw plot using only ASCII characters.
+#' @param ascii Whether to draw plot using only ASCII characters.
+#' @param output How to draw plot.
 #'
 #' @return Returns \code{NULL}, invisibly.
 #'
@@ -30,7 +31,8 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
                          line = NULL, abline.x = NULL, abline.y = NULL,
                          abline.overlay = FALSE, horizontal = FALSE,
                          xlim = NULL, ylim = NULL, plot.width = NULL,
-                         plot.height = NULL, legend = NULL, ASCII = FALSE) {
+                         plot.height = NULL, legend = NULL,
+                         ascii = getOption("ascii"), output = "cat") {
 
   # types: p=point, l=line, b=line+point, h=point with vertical downward line,
   #        s=staircase, S=inverase staircase
@@ -41,7 +43,7 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
   if (is.null(plot.height)) plot.height <- as.integer(plot.width / 2)
 
   all.symbols <- c()
-  if (!ASCII) {
+  if (!ascii) {
     all.symbols <- c(8226, 215, 43, 8718, 9670, 9650, 9744, 9671, 9651, 9737,
                      9733, 9734, 10035, 9746, 8865, 8857, 8853, 10023)
     all.symbols <- sapply(all.symbols, intToUtf8)
@@ -50,12 +52,12 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
                    letters[-15])
 
   all.lines <- c()
-  if (!ASCII) {
+  if (!ascii) {
     all.lines <- c(9475, 9479, 9483, 9551, 9553, 9474, 9478, 9482, 9550)
     all.lines <- sapply(all.lines, intToUtf8)
   }
   all.lines <- c(all.lines, "|", "-", "/", "\\", ".", ",", "~")
- 
+
   if (is.null(xlab)) xlab <- deparse(substitute(x))
   if (is.null(ylab)) ylab <- deparse(substitute(y))
 
@@ -94,7 +96,7 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
   y.original <- y
 
   if (is.null(ylim)) ylim <- c(min(y), max(y)) else {
-    x <- x[y >= ylim[1]] 
+    x <- x[y >= ylim[1]]
     groups <- groups[y >= ylim[1]]
     y <- y[y >= ylim[1]]
     x <- x[y <= ylim[2]]
@@ -164,17 +166,17 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
   # generate plot
 
   plot.lines <- console.plot.types(x, y, groups, plot.width, plot.height, point,
-                                   type, line, abline.x, abline.y, ASCII,
+                                   type, line, abline.x, abline.y, ascii,
                                    abline.overlay)
 
   # add axis lines
 
   plot.lines <- console.plot.axis(plot.lines, plot.width, plot.height,
-                                  ylim, xlim, ASCII)
+                                  ylim, xlim, ascii)
 
   # fix abline
 
-  if (!is.null(abline.x) && !ASCII) {
+  if (!is.null(abline.x) && !ascii) {
     substr(plot.lines[1], abline.x + 14, abline.x + 14) <- intToUtf8(0x252C)
     substr(plot.lines[length(plot.lines) - 2], abline.x + 14,
            abline.x + 14) <- intToUtf8(0x2534)
@@ -185,7 +187,7 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
     }
   }
   if (!is.null(abline.y)) {
-    if (!ASCII) {
+    if (!ascii) {
       substr(plot.lines[abline.y + 1], 14, 14) <- intToUtf8(0x2500)
       substr(plot.lines[abline.y + 1], 13, 13) <- intToUtf8(0x251C)
       substr(plot.lines[abline.y + 1], plot.width + 15,
@@ -233,7 +235,15 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
     plot.lines <- c(plot.lines, xlab, "")
   }
 
-  cat(plot.lines, sep = "\n", file = file)
+  if (output == "cat") cat(plot.lines, sep = "\n", file = file)
+  else if (output == "writeLines") {
+    if (file == "" || file == stdout()) con <- stdout() else con <- file(file)
+    writeLines(plot.lines, con = con, sep = "\n")
+    if (file != "" && file != stdout()) close(con)
+  }
+  else if (output == "message") message(paste(plot.lines, collapse = "\n"))
+  else if (output != "none")
+    stop("'output' must be one of 'cat', 'message', 'writeLines', 'none'")
 
   invisible(plot.lines)
 
