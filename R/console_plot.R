@@ -37,32 +37,20 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
   # types: p=point, l=line, b=line+point, h=point with vertical downward line,
   #        s=staircase, S=inverase staircase
 
+  s <- get_symbols(ascii)
+  all.symbols <- s$all.symbols
+  all.lines <- s$all.lines
+
   if (!type %in% c("p", "l", "b", "h", "s", "S")) warning("unknown 'type'")
 
   if (is.null(plot.width)) plot.width <- as.integer(options("width")$width / 1.35)
   if (is.null(plot.height)) plot.height <- as.integer(plot.width / 2)
 
-  all.symbols <- c()
-  if (!ascii) {
-    all.symbols <- c(8226, 215, 43, 8718, 9670, 9650, 9744, 9671, 9651, 9737,
-                     9733, 9734, 10035, 9746, 8865, 8857, 8853, 10023)
-    all.symbols <- sapply(all.symbols, intToUtf8)
-  }
-  all.symbols <- c(all.symbols, "o", "@", "#", "$", "%", "&", ">", "<", "?",
-                   letters[-15])
-
-  all.lines <- c()
-  if (!ascii) {
-    all.lines <- c(9475, 9479, 9483, 9551, 9553, 9474, 9478, 9482, 9550)
-    all.lines <- sapply(all.lines, intToUtf8)
-  }
-  all.lines <- c(all.lines, "|", "-", "/", "\\", ".", ",", "~")
-
   if (is.null(xlab)) xlab <- deparse(substitute(x))
   if (is.null(ylab)) ylab <- deparse(substitute(y))
 
-  if (plot.height < 12) stop("'plot.height' must be greater than 11")
-  if (plot.width < 30) stop("'plot.width' must be greater than 29")
+  if (plot.height < 5) stop("'plot.height' must be at least 5")
+  if (plot.width < 20) stop("'plot.width' must be at least 20")
 
   groups.original <- groups
   if (is.null(groups)) groups <- rep(1, length(x)) else {
@@ -82,7 +70,7 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
       }
     }
     ylab <- xlab
-    xlab <- "Index"
+    if (is.null(xlab)) xlab <- "Index"
   } else if (length(y) != length(x))
     stop("x and y must have the same number of observations")
 
@@ -166,40 +154,36 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
   # generate plot
 
   plot.lines <- console.plot.types(x, y, groups, plot.width, plot.height, point,
-                                   type, line, abline.x, abline.y, ascii,
-                                   abline.overlay)
+                                   type, line, abline.x, abline.y,
+                                   abline.overlay, s)
 
   # add axis lines
 
   plot.lines <- console.plot.axis(plot.lines, plot.width, plot.height,
-                                  ylim, xlim, ascii)
+                                  ylim, xlim, s)
 
   # fix abline
 
-  if (!is.null(abline.x) && !ascii) {
-    substr(plot.lines[1], abline.x + 14, abline.x + 14) <- intToUtf8(0x252C)
+  if (!is.null(abline.x)) {
+    substr(plot.lines[1], abline.x + 14, abline.x + 14) <- s$hori.down
     substr(plot.lines[length(plot.lines) - 2], abline.x + 14,
-           abline.x + 14) <- intToUtf8(0x2534)
+           abline.x + 14) <- s$hori.up
     if (substr(plot.lines[length(plot.lines) - 1], abline.x + 14,
-               abline.x + 14) == intToUtf8(0x2575)) {
+               abline.x + 14) == s$tick.x.minor) {
       substr(plot.lines[length(plot.lines) - 2], abline.x + 14,
-             abline.x + 14) <- intToUtf8(0x253C)
+             abline.x + 14) <- s$cross
     }
   }
+
   if (!is.null(abline.y)) {
-    if (!ascii) {
-      substr(plot.lines[abline.y + 1], 14, 14) <- intToUtf8(0x2500)
-      substr(plot.lines[abline.y + 1], 13, 13) <- intToUtf8(0x251C)
-      substr(plot.lines[abline.y + 1], plot.width + 15,
-             plot.width + 15) <- intToUtf8(0x2500)
-      substr(plot.lines[abline.y + 1], plot.width + 16,
-             plot.width + 16) <- intToUtf8(0x2524)
-      if (substr(plot.lines[abline.y + 1], 12, 12) == intToUtf8(0x2500)) {
-        substr(plot.lines[abline.y + 1], 13, 13) <- intToUtf8(0x253C)
-      }
-    } else {
-      substr(plot.lines[abline.y + 1], 14, 14) <- "-"
-      substr(plot.lines[abline.y + 1], plot.width + 15, plot.width + 15) <- "-"
+    substr(plot.lines[abline.y + 1], 14, 14) <- s$hori
+    substr(plot.lines[abline.y + 1], 13, 13) <- s$vert.right
+    substr(plot.lines[abline.y + 1], plot.width + 15,
+           plot.width + 15) <- s$hori
+    substr(plot.lines[abline.y + 1], plot.width + 16,
+           plot.width + 16) <- s$vert.left
+    if (substr(plot.lines[abline.y + 1], 12, 12) == s$hori) {
+      substr(plot.lines[abline.y + 1], 13, 13) <- s$cross
     }
   }
 

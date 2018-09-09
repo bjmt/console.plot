@@ -1,6 +1,6 @@
 console.plot.types <- function(x, y, groups, plot.width, plot.height, point,
-                               type, line, abline.x, abline.y, ASCII, 
-                               abline.overlay) {
+                               type, line, abline.x, abline.y,
+                               abline.overlay, s) {
 
   plot.lines <- paste(rep(" ", plot.width), collapse = "")
   plot.lines <- rep(plot.lines, plot.height)
@@ -23,9 +23,9 @@ console.plot.types <- function(x, y, groups, plot.width, plot.height, point,
         if (length(substr(plot.lines[j], h.index.i[1], h.index.i[1])) > 0) {
 
           if (substr(plot.lines[j], h.index.i[1], h.index.i[1]) == " ") {
-            if (ASCII) substr(plot.lines[j], h.index.i[1], h.index.i[1]) <- "|"
-            if (!ASCII) substr(plot.lines[j], h.index.i[1],
-                               h.index.i[1]) <- intToUtf8(0x2502)
+
+            substr(plot.lines[j], h.index.i[1], h.index.i[1]) <- s$vert
+
           }
 
         }
@@ -51,62 +51,47 @@ console.plot.types <- function(x, y, groups, plot.width, plot.height, point,
         if (type == "s") {
         
           if (abs(x.i.1 - x.i.2) > 0) {
-            if (ASCII) {
-              substr(plot.lines[y.i.1], x.i.1,
-                               x.i.2) <- paste(rep("-", abs(x.i.1 - x.i.2)),
-                                               collapse = "")
-            }
-            if (!ASCII) {
-              substr(plot.lines[y.i.1], x.i.1,
-                               x.i.2) <- paste(rep(intToUtf8(0x2500), abs(x.i.1 - x.i.2)),
-                                               collapse = "")
-              if (x.i.1 != 1 && y.i.1 > y.i.2) substr(plot.lines[y.i.1], x.i.1,
-                                     x.i.1) <- intToUtf8(0x250c)
-              if (x.i.1 != 1 && y.i.1 < y.i.2) substr(plot.lines[y.i.1], x.i.1,
-                                     x.i.1) <- intToUtf8(0x2514)
-            }
+            substr(plot.lines[y.i.1], x.i.1,
+                             x.i.2) <- paste(rep(s$hori, abs(x.i.1 - x.i.2)),
+                                             collapse = "")
+            if (x.i.1 != 1 && y.i.1 > y.i.2) substr(plot.lines[y.i.1], x.i.1,
+                                   x.i.1) <- s$corner.top.left
+            if (x.i.1 != 1 && y.i.1 < y.i.2) substr(plot.lines[y.i.1], x.i.1,
+                                   x.i.1) <- s$corner.bot.left
           }
 
           if (abs(y.i.1 - y.i.2) > 0) {
 
-            if (!ASCII && y.i.1 > y.i.2) substr(plot.lines[y.i.1], x.i.2,
-                                                x.i.2) <- intToUtf8(0x2518)
-            else if (!ASCII) substr(plot.lines[y.i.1], x.i.2,
-                                    x.i.2) <- intToUtf8(0x2510)
+            if (y.i.1 > y.i.2) substr(plot.lines[y.i.1], x.i.2,
+                                                x.i.2) <- s$corner.bot.right
+            else  substr(plot.lines[y.i.1], x.i.2,
+                                    x.i.2) <- s$corner.top.right
 
             for (m in seq(y.i.1, y.i.2)[-c(1, y.i.1 + y.i.2)]) {
-              if (ASCII) substr(plot.lines[m], x.i.2, x.i.2) <- "|"
-              if (!ASCII) substr(plot.lines[m], x.i.2, x.i.2) <- intToUtf8(0x2502)
+              substr(plot.lines[m], x.i.2, x.i.2) <- s$vert
             }
           }
         
         } else if (type == "S") {
         
           if (abs(x.i.1 - x.i.2) > 0) {
-            if (ASCII) substr(plot.lines[y.i.2], x.i.1,
-                               x.i.2) <- paste(rep("-", abs(x.i.1 - x.i.2)),
-                                               collapse = "")
-            if (!ASCII) substr(plot.lines[y.i.2], x.i.1,
-                               x.i.2) <- paste(rep(intToUtf8(0x2500), abs(x.i.1 - x.i.2)),
-                                               collapse = "")
+            substr(plot.lines[y.i.2], x.i.1, x.i.2) <- paste(rep(s$hori, abs(x.i.1 - x.i.2)),
+                                                             collapse = "")
           }
 
           if (abs(y.i.1 - y.i.2) > 0) {
             for (m in seq(y.i.1, y.i.2)[-c(1, y.i.1 + y.i.2)]) {
-              if (ASCII) substr(plot.lines[m], x.i.1, x.i.1) <- "|"
-              if (!ASCII) substr(plot.lines[m], x.i.1, x.i.1) <- intToUtf8(0x2502)
+              substr(plot.lines[m], x.i.1, x.i.1) <- s$vert
             }
           }
-          if (!ASCII) {
-            if (x.i.1 == 1 && y.i.1 < y.i.2) substr(plot.lines[y.i.2], x.i.1,
-                                   x.i.1) <- intToUtf8(0x2514)
-            if (x.i.1 == 1 && y.i.1 > y.i.2) substr(plot.lines[y.i.2], x.i.1,
-                                   x.i.1) <- intToUtf8(0x250c)
-            if (x.i.1 != 1 && y.i.1 > y.i.2) substr(plot.lines[y.i.2], x.i.1,
-                                   x.i.1) <- intToUtf8(0x250c)
-            if (x.i.1 != 1 && y.i.1 < y.i.2) substr(plot.lines[y.i.2], x.i.1,
-                                   x.i.1) <- intToUtf8(0x2514)
-          }
+          if (x.i.1 == 1 && y.i.1 < y.i.2) substr(plot.lines[y.i.2], x.i.1,
+                                 x.i.1) <- s$corner.bot.left
+          if (x.i.1 == 1 && y.i.1 > y.i.2) substr(plot.lines[y.i.2], x.i.1,
+                                 x.i.1) <- s$corner.top.left
+          if (x.i.1 != 1 && y.i.1 > y.i.2) substr(plot.lines[y.i.2], x.i.1,
+                                 x.i.1) <- s$corner.top.left
+          if (x.i.1 != 1 && y.i.1 < y.i.2) substr(plot.lines[y.i.2], x.i.1,
+                                 x.i.1) <- s$corner.bot.left
         
         }
       
@@ -188,14 +173,11 @@ console.plot.types <- function(x, y, groups, plot.width, plot.height, point,
 
   if (!is.null(abline.y)) {
     if (abline.overlay) {
-      if (ASCII) plot.lines[abline.y] <- paste(rep("-", plot.width), collapse = "")
-      if (!ASCII) plot.lines[abline.y] <- paste(rep(intToUtf8(0x2500), plot.width),
-                                               collapse = "")
+      plot.lines[abline.y] <- paste(rep(s$hori, plot.width), collapse = "")
     } else {
       for (i in seq_len(plot.width)) {
         if (substr(plot.lines[abline.y], i, i) == " ") {
-          if (ASCII) substr(plot.lines[abline.y], i, i) <- "-"
-          if (!ASCII) substr(plot.lines[abline.y], i, i) <- intToUtf8(0x2500)
+          substr(plot.lines[abline.y], i, i) <- s$hori
         }
       }
     }
@@ -204,14 +186,12 @@ console.plot.types <- function(x, y, groups, plot.width, plot.height, point,
   if (!is.null(abline.x)) {
     for (i in seq_len(plot.height)) {
       if (!abline.overlay) {
-        if (!ASCII) {
-          if (substr(plot.lines[i], abline.x, abline.x) == intToUtf8(0x2500))
-            substr(plot.lines[i], abline.x, abline.x) <- intToUtf8(0x253C)
+        if (substr(plot.lines[i], abline.x, abline.x) == s$hori) {
+          substr(plot.lines[i], abline.x, abline.x) <- s$cross
         }
         if (substr(plot.lines[i], abline.x, abline.x) != " ") next
       }
-      if (ASCII) substr(plot.lines[i], abline.x, abline.x) <- "|"
-      if (!ASCII) substr(plot.lines[i], abline.x, abline.x) <- intToUtf8(0x2502)
+      substr(plot.lines[i], abline.x, abline.x) <- s$vert
     }
   }
 

@@ -1,101 +1,54 @@
 console.plot.axis <- function(plot.lines, plot.width, plot.height, ylim, xlim,
-                              ASCII) {
+                              s) {
 
-  if (ASCII) plot.lines <- paste0(plot.lines, " ", "|")
-  if (!ASCII) plot.lines <- paste0(plot.lines, " ", intToUtf8(0x2502))
+  plot.lines <- paste0(plot.lines, " ", s$vert)
 
-  if (!ASCII) plot.lines[1] <- paste0(" ", intToUtf8(0x2500), intToUtf8(0x2524),
-                                      " ", plot.lines[1])
-  if (ASCII) plot.lines[1] <- paste0(" ", "-", "|",
-                                      " ", plot.lines[1])
+  plot.lines[1] <- paste0(" ", s$hori, s$vert.left, " ", plot.lines[1])
 
- if (!ASCII) plot.lines[length(plot.lines)] <- paste0(" ", intToUtf8(0x2500),
-                                                      intToUtf8(0x2524),
-                                                      " ",
-                                                      plot.lines[length(plot.lines)])
- if (ASCII) plot.lines[length(plot.lines)] <- paste0(" ", "-",
-                                                      "|",
-                                                      " ",
-                                                      plot.lines[length(plot.lines)])
+ plot.lines[length(plot.lines)] <- paste0(" ", s$hori, s$vert.left, " ",
+                                          plot.lines[length(plot.lines)])
 
   mid.y <- round(plot.height / 2)
 
-  if (!ASCII) plot.lines[mid.y] <- paste0(" ", intToUtf8(0x2500),
-                                          intToUtf8(0x2524), " ",
-                                          plot.lines[mid.y])
-  if (ASCII) plot.lines[mid.y] <- paste0(" ", "-",
-                                          "|", " ",
-                                          plot.lines[mid.y])
+  plot.lines[mid.y] <- paste0(" ", s$hori, s$vert, " ", plot.lines[mid.y])
 
   mid.y1 <- round(plot.height * 0.25)
   mid.y3 <- round(plot.height * 0.75)
 
-  if (!ASCII) plot.lines[mid.y1] <- paste0("  ", intToUtf8(0x2524), " ",
-                                           plot.lines[mid.y1])
-  if (ASCII) plot.lines[mid.y1] <- paste0("  ", "|", " ",
-                                           plot.lines[mid.y1])
+  plot.lines[mid.y1] <- paste0("  ", s$vert.left, " ", plot.lines[mid.y1])
 
-  if (!ASCII) plot.lines[mid.y3] <- paste0("  ", intToUtf8(0x2524), " ",
-                                           plot.lines[mid.y3])
-  if (ASCII) plot.lines[mid.y3] <- paste0("  ", "|", " ",
-                                           plot.lines[mid.y3])
+  plot.lines[mid.y3] <- paste0("  ", s$vert.left, " ", plot.lines[mid.y3])
 
   yaxis.skip <- c(1, length(plot.lines), mid.y, mid.y1, mid.y3)
 
-  if (!ASCII) plot.lines[-yaxis.skip] <- paste0(paste0("  ",
-                                                       intToUtf8(0x2502), " "),
-                                                plot.lines[-yaxis.skip])
-  if (ASCII) plot.lines[-yaxis.skip] <- paste0(paste0("  ",
-                                                       "|", " "),
-                                                plot.lines[-yaxis.skip])
+  plot.lines[-yaxis.skip] <- paste0(paste0("  ", s$vert, " "),
+                                    plot.lines[-yaxis.skip])
 
   mid.x <- round(plot.width / 2)
   mid.x1 <- round(plot.width * 0.25)
   mid.x3 <- round(plot.width * 0.75)
 
-  if (!ASCII) xaxis <- paste0(paste0("  ", intToUtf8(0x2514), intToUtf8(0x2500),
-                         intToUtf8(0x252c)),
-                  paste(rep(intToUtf8(0x2500), mid.x1 - 1), collapse = ""),
-                  intToUtf8(0x252c),
-                  paste(rep(intToUtf8(0x2500), mid.x - mid.x1 - 1), collapse = ""),
-                  intToUtf8(0x252c),
-                  paste(rep(intToUtf8(0x2500), mid.x3 - mid.x - 1), collapse = ""),
-                  intToUtf8(0x252c),
-                  paste(rep(intToUtf8(0x2500), plot.width - mid.x3 - 2), collapse = ""),
-                  paste0(intToUtf8(0x252c), intToUtf8(0x2500), intToUtf8(0x2518)))
-  if (ASCII) xaxis <- paste0(paste0("  ", "+", "-",
-                         "-"),
-                  paste(rep("-", mid.x1 - 1), collapse = ""),
-                  "-",
-                  paste(rep("-", mid.x - mid.x1 - 1), collapse = ""),
-                  "-",
-                  paste(rep("-", mid.x3 - mid.x - 1), collapse = ""),
-                  "-",
-                  paste(rep("-", plot.width - mid.x3 - 2), collapse = ""),
-                  paste0("-", "-", "+"))
+  xaxis <- paste0(paste0("  ", s$corner.bot.left, s$hori, s$hori.down),
+                  paste(rep(s$hori, mid.x1 - 1), collapse = ""),
+                  s$hori.down,
+                  paste(rep(s$hori, mid.x - mid.x1 - 1), collapse = ""),
+                  s$hori.down,
+                  paste(rep(s$hori, mid.x3 - mid.x - 1), collapse = ""),
+                  s$hori.down,
+                  paste(rep(s$hori, plot.width - mid.x3 - 2), collapse = ""),
+                  paste0(s$hori.down, s$hori, s$corner.bot.right))
 
-  if (!ASCII) xaxis2 <- paste0("    ", intToUtf8(0x2575), 
+  xaxis2 <- paste0("    ", s$tick.x.minor,
                    paste(rep(" ", mid.x1 - 1), collapse = ""), " ",
-                   paste(rep(" ", mid.x - mid.x1 - 1), collapse = ""), 
-                   intToUtf8(0x2575),
+                   paste(rep(" ", mid.x - mid.x1 - 1), collapse = ""),
+                   s$tick.x.minor,
                    paste(rep(" ", mid.x3 - mid.x - 1), collapse = ""), " ",
                    paste(rep(" ", plot.width - mid.x3 - 2), collapse = ""),
-                   intToUtf8(0x2575))
-  if (ASCII) xaxis2 <- paste0("    ", "|", 
-                   paste(rep(" ", mid.x1 - 1), collapse = ""), " ",
-                   paste(rep(" ", mid.x - mid.x1 - 1), collapse = ""), 
-                   "|",
-                   paste(rep(" ", mid.x3 - mid.x - 1), collapse = ""), " ",
-                   paste(rep(" ", plot.width - mid.x3 - 2), collapse = ""),
-                   "|")
+                   s$tick.x.minor)
 
   plot.lines <- c(plot.lines, xaxis, xaxis2)
-  if (!ASCII) plot.top <- paste0("  ", intToUtf8(0x250c),
-                     paste(rep(intToUtf8(0x2500), plot.width + 2), collapse = ""),
-                     intToUtf8(0x2510))
-  if (ASCII) plot.top <- paste0("  ", "+",
-                     paste(rep("-", plot.width + 2), collapse = ""),
-                     "+")
+  plot.top <- paste0("  ", s$corner.top.left, paste(rep(s$hori, plot.width + 2),
+                                                    collapse = ""), s$corner.top.right)
   plot.lines <- c(plot.top, plot.lines)
 
   # add axis scales
