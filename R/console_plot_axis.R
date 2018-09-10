@@ -56,7 +56,7 @@ console.plot.axis <- function(plot.lines, plot.width, plot.height, ylim, xlim,
 
   xaxis.1 <- formatC(xlim[1], digits = 3)
   xaxis.2 <- formatC(mean(xlim), digits = 3)
-  xaxis.3 <- formatC(xlim, digits = 3)
+  xaxis.3 <- formatC(xlim[2], digits = 3)
 
   xaxis.scale <- c(format(as.character(xaxis.1), width = 5, justify = "centre"),
                    format(as.character(xaxis.2), width = 5, justify = "centre"),
