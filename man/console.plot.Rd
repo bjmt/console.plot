@@ -7,9 +7,9 @@
 console.plot(x, y = NULL, groups = NULL, main = NULL, file = "",
   xlab = NULL, ylab = NULL, type = "p", point = NULL,
   line = NULL, abline.x = NULL, abline.y = NULL,
-  abline.overlay = FALSE, xlim = NULL, ylim = NULL,
-  plot.width = NULL, plot.height = NULL, legend = NULL,
-  ASCII = FALSE)
+  abline.overlay = FALSE, horizontal = FALSE, xlim = NULL,
+  ylim = NULL, plot.width = NULL, plot.height = NULL,
+  legend = NULL, ascii = getOption("ascii"), output = "cat")
 }
 \arguments{
 \item{x}{Numeric vector of data.}
@@ -38,6 +38,8 @@ console.plot(x, y = NULL, groups = NULL, main = NULL, file = "",
 
 \item{abline.overlay}{Allow abline to hide data points/line.}
 
+\item{horizontal}{Flip axes.}
+
 \item{xlim}{Min and max for x axis.}
 
 \item{ylim}{Min and max for y axis.}
@@ -48,9 +50,9 @@ console.plot(x, y = NULL, groups = NULL, main = NULL, file = "",
 
 \item{legend}{Show legend.}
 
-\item{ASCII}{Whether to draw plot using only ASCII characters.}
+\item{ascii}{Whether to draw plot using only ASCII characters.}
 
-\item{horizontal}{Flip axes.}
+\item{output}{How to draw plot.}
 }
 \value{
 Returns \code{NULL}, invisibly.

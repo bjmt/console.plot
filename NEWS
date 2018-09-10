@@ -1,3 +1,16 @@
+# console.plot 0.0.4 #
+
+## User-facing ##
+
+- plots with `plot.height = 5` now display correctly
+- xaxis tick labels now better align with ticks
+
+## Internal ##
+
+- got rid of hex codes
+- added stats import
+- fixed approx errors from duplicate x values
+
 # console.plot 0.0.3 #
 
 ## User-facing ##

@@ -118,6 +118,7 @@ console.plot.types <- function(x, y, groups, plot.width, plot.height, point,
         y.i.1 <- y.i[j]
         y.i.2 <- y.i[j + 1]
 
+        if (x.i.1 == x.i.2) x.i.2 <- x.i.2 + 0.1  # approx won't work otherwise
         x.y.new <- approx(c(x.i.1, x.i.2), c(y.i.1, y.i.2),
                           n = plot.width * plot.height)
         x.y.new <- unique(data.frame(x.y.new[[1]], x.y.new[[2]]))

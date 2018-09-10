@@ -5,14 +5,15 @@ console.plot.axis <- function(plot.lines, plot.width, plot.height, ylim, xlim,
 
   plot.lines[1] <- paste0(" ", s$hori, s$vert.left, " ", plot.lines[1])
 
- plot.lines[length(plot.lines)] <- paste0(" ", s$hori, s$vert.left, " ",
+  plot.lines[length(plot.lines)] <- paste0(" ", s$hori, s$vert.left, " ",
                                           plot.lines[length(plot.lines)])
 
-  mid.y <- round(plot.height / 2)
+  mid.y <- round(plot.height / 2 + 0.01)
 
-  plot.lines[mid.y] <- paste0(" ", s$hori, s$vert, " ", plot.lines[mid.y])
+  plot.lines[mid.y] <- paste0(" ", s$hori, s$vert.left, " ", plot.lines[mid.y])
 
   mid.y1 <- round(plot.height * 0.25)
+  if (mid.y1 == 1) mid.y1 <- 2
   mid.y3 <- round(plot.height * 0.75)
 
   plot.lines[mid.y1] <- paste0("  ", s$vert.left, " ", plot.lines[mid.y1])
@@ -24,7 +25,7 @@ console.plot.axis <- function(plot.lines, plot.width, plot.height, ylim, xlim,
   plot.lines[-yaxis.skip] <- paste0(paste0("  ", s$vert, " "),
                                     plot.lines[-yaxis.skip])
 
-  mid.x <- round(plot.width / 2)
+  mid.x <- round(plot.width / 2 + 0.01)
   mid.x1 <- round(plot.width * 0.25)
   mid.x3 <- round(plot.width * 0.75)
 
@@ -53,9 +54,9 @@ console.plot.axis <- function(plot.lines, plot.width, plot.height, ylim, xlim,
 
   # add axis scales
 
-  xaxis.scale <- c(gsub(" ", "", formatC(xlim[1], digits = 4, width = 5)),
-                   gsub(" ", "", formatC(mean(xlim), digits = 4, width = 5)),
-                   gsub(" ", "", formatC(xlim[2], digits = 4, width = 5)))
+  xaxis.scale <- c(format(as.character(xlim[1]), digits = 4, width = 5, justify = "centre"),
+                   format(as.character(mean(xlim)), digits = 4, width = 5, justify = "centre"),
+                   format(as.character(xlim[2]), digits = 4, width = 5, justify = "centre"))
   yaxis.scale <- c(gsub(" ", "", formatC(ylim[1], digits = 4, width = 5)),
                    gsub(" ", "", formatC(mean(ylim), digits = 4, width = 5)),
                    gsub(" ", "", formatC(ylim[2], digits = 4, width = 5)))
@@ -63,11 +64,10 @@ console.plot.axis <- function(plot.lines, plot.width, plot.height, ylim, xlim,
   y.offset <- 8
   y.offset.scale <- y.offset - nchar(yaxis.scale)
 
-  xaxis.scale.filler <- c("    ",
-                          paste(rep(" ", mid.x - sum(nchar(xaxis.scale[1:2])) +
-                                         round(nchar(xaxis.scale[2]) / 2)),
+  xaxis.scale.filler <- c("  ",
+                          paste(rep(" ", mid.x - 5),
                                 collapse = ""),
-                          paste(rep(" ", mid.x - nchar(xaxis.scale[3])),
+                          paste(rep(" ", mid.x - 6),
                                 collapse = ""))
   xaxis.scale <- paste0(xaxis.scale.filler[1], xaxis.scale[1],
                         xaxis.scale.filler[2], xaxis.scale[2],
