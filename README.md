@@ -5,7 +5,6 @@ Typical plot:
 ```r
 console.plot(rnorm(60), plot.height = 20, plot.width = 60, type = "h",
              main = "Example plot")
-```
     
                  Example plot
                 ┌──────────────────────────────────────────────────────────────┐
@@ -34,13 +33,13 @@ console.plot(rnorm(60), plot.height = 20, plot.width = 60, type = "h",
                    1                          30.5                            1 
     
                                             rnorm(60)
+```
 
 Only using ASCII characters:
 
 ```r
 console.plot(rnorm(60), plot.height = 20, plot.width = 60, type = "h",
              main = "Example plot", ascii = TRUE)
-```
     
                  Example plot
                 ----------------------------------------------------------------
@@ -69,4 +68,4 @@ console.plot(rnorm(60), plot.height = 20, plot.width = 60, type = "h",
                    1                          30.5                            1 
     
                                             rnorm(60)
-
+```
