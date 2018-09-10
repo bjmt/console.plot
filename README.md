@@ -1,5 +1,7 @@
 # console.plot
 
+Under active development -- expect bugs.
+
 Typical plot:
 
 ```r
