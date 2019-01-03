@@ -2,8 +2,8 @@ Package: console.plot
 Title: Plots for the R console
 Version: 0.0.5
 Authors@R: 
-    person(given = "Benjamin",
-           family = "Tremblay",
+    person(c("Benjamin", "Jean-Marie"),
+           "Tremblay",
            role = c("aut", "cre"),
            email = "b2tremblay@uwaterloo.ca")
 Description: Create plots using characters for printing in the console, or saving to disk.
