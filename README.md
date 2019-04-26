@@ -1,4 +1,4 @@
-# console.plot
+# console.plot [WIP]
 
 Under active development -- expect bugs.
 
