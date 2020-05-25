@@ -69,7 +69,7 @@ console.plot <- function(x, y = NULL, groups = NULL, main = NULL, file = "",
         m <- m + 1
       }
     }
-    ylab <- xlab
+    if (ylab == "NULL") ylab <- xlab
     if (is.null(xlab)) xlab <- "Index"
   } else if (length(y) != length(x))
     stop("x and y must have the same number of observations")
