@@ -1,3 +1,14 @@
+# console.plot 0.0.6 #
+
+## Bug fixes ##
+
+- For plots where `y = NULL`, don't ignore `ylab` if specified. (PR #1 by
+  @rkmittal)
+
+## Misc ##
+
+- Updated LICENSE
+
 # console.plot 0.0.5 #
 
 ## User-facing ##
